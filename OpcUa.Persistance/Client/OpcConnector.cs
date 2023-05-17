@@ -1,7 +1,6 @@
 ﻿using Opc.Ua.Client;
 using Opc.Ua;
 using OpcUa.Helpers;
-using OpcUa.Exceptions;
 using System.Text;
 using OpcUa.Domain;
 using OpcUa.Domain.Contracts.Client;
@@ -22,7 +21,8 @@ public class OpcConnector : IOpcConnector
 	/// <param name="password">The password</param>
 	/// <exception cref="Exception">Throws and forwards any exception with short error description.</exception>
 
-	public async Task<IOpcClient> CreateConnection(string url, string secPolicy, MessageSecurityMode msgSecMode, bool userAuth, string userName, string password, string sessionName = "MySession", uint sessionTimeout = 60000)
+	public async Task<IOpcClient> CreateConnection(string url, string secPolicy, MessageSecurityMode msgSecMode, bool userAuth, string userName, string password,
+		string sessionName = "MySession", uint sessionTimeout = 60000)
 	{
 		EndpointDescription endpointDescription = EndpointHelper.CreateEndpointDescription(url, secPolicy, msgSecMode);
 		return await CreateConnection(endpointDescription, userAuth, userName, password, sessionName, sessionTimeout);
@@ -37,6 +37,7 @@ public class OpcConnector : IOpcConnector
 	/// <exception cref="Exception">Throws and forwards any exception with short error description.</exception>
 	public async Task<IOpcClient> CreateConnection(EndpointDescription endpointDescription, bool userAuth, string userName = default, string password = default, string sessionName = "MySession", uint sessionTimeout = 60000)
 	{
+		//todo: null check
 		var applicationConfig = await ApplicationConfigurationFactory.Create();
 		IOpcClient client = new OpcUaClient(applicationConfig);
 		UserIdentity userIdentity = new();
@@ -73,9 +74,9 @@ public class OpcConnector : IOpcConnector
 		}
 		catch (Exception e)
 		{
-			StringBuilder exceptionBuilder = new($"Connection [{endpointDescription.EndpointUrl}] failed. ");
-			if (userAuth) exceptionBuilder.Append($"User [{userName}].");
-			throw new ConnectionFailedException(exceptionBuilder.ToString(), e.InnerException);
+			StringBuilder exceptionMessageBuilder = new($"Connection [{endpointDescription.EndpointUrl}] failed. ");
+			if (userAuth) exceptionMessageBuilder.Append($"User [{userName}].");
+			throw new ConnectionFailedException(exceptionMessageBuilder.ToString(), e.InnerException);
 		}
 		return client;
 	}
@@ -84,20 +85,21 @@ public class OpcConnector : IOpcConnector
 	/// <exception cref="Exception">Throws and forwards any exception with short error description.</exception>
 	public void Disconnect(IOpcClient client)
 	{
+		//todo: null check
 		// Close the session.
 		try
 		{
-			client.Session.Close(10000);
-			client.Session.Dispose();
+			client?.Session?.Close(10000);
+			if (client?.Session?.Disposed == false) client?.Session?.Dispose();
 		}
 		catch (Exception)
 		{
+			if (client?.Session?.Disposed == false) client?.Session?.Dispose();
 			//handle Exception here
 			throw;
 		}
 	}
 
 	#endregion Connect/Disconnect
-
 
 }

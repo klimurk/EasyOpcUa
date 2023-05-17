@@ -6,7 +6,6 @@ using OpcUa.Persistance.Helpers;
 using OpcUa.Persistance.Exceptions.Reader;
 using OpcUa.Persistance.Exceptions.Related;
 using OpcUa.Domain.Basics;
-using Extensions;
 using Newtonsoft.Json.Schema;
 
 namespace Woodnailer.Application.Opc.Client;
@@ -23,6 +22,7 @@ public class OpcReader
 	/// <exception cref="Exception">Throws and forwards any exception with short error description.</exception>
 	public ReferenceDescriptionCollection BrowseReference(IOpcClient client, ReferenceDescription refDesc)
 	{
+		// todo: null change
 		//Create a NodeId using the selected ReferenceDescription as browsing starting point
 		NodeId nodeId = ExpandedNodeId.ToNodeId(refDesc.NodeId, null);
 		try
@@ -56,8 +56,8 @@ public class OpcReader
 
 	private ReferenceDescriptionCollection ExtractReferenceCollection(IOpcClient client, NodeId nodeId)
 	{
-		client.Session.Browse(null, null, nodeId, 0u, BrowseDirection.Forward, ReferenceTypeIds.HierarchicalReferences, true, 0, out byte[] continuationPoint, out ReferenceDescriptionCollection referenceDescriptionCollection);
-
+		client.Session.Browse(null, view: null, nodeId, 0u, BrowseDirection.Forward, ReferenceTypeIds.HierarchicalReferences, true, 0, out byte[] continuationPoint, out ReferenceDescriptionCollection referenceDescriptionCollection);
+		// todo: check arra not empty
 		while (continuationPoint != null)
 		{
 			client.Session.BrowseNext(null, false, continuationPoint, out byte[] revisedContinuationPoint, out ReferenceDescriptionCollection nextreferenceDescriptionCollection);
@@ -76,7 +76,7 @@ public class OpcReader
 		{
 			//Browse from starting point for all object types
 			client.Session.Browse(null, null, nodeId, 0u, BrowseDirection.Forward, ReferenceTypeIds.HierarchicalReferences, true, 0, out byte[] continuationPoint, out ReferenceDescriptionCollection referenceDescriptionCollection);
-			return referenceDescriptionCollection.Count > 0;
+			return referenceDescriptionCollection?.Count > 0;
 		}
 		catch (Exception)
 		{
@@ -99,6 +99,7 @@ public class OpcReader
 		}
 		catch (Exception e)
 		{
+			// exception
 			return null;
 		}
 	}
@@ -111,7 +112,7 @@ public class OpcReader
 	/// <exception cref="Exception">Throws and forwards any exception with short error description.</exception>
 	public Node GetNode(IOpcClient client, string nodeIdString)
 	{
-		if (string.IsNullOrEmpty(nodeIdString)) return null;
+		if (string.IsNullOrEmpty(nodeIdString.Trim())) return null;
 		//Create a node
 		try
 		{
@@ -125,13 +126,10 @@ public class OpcReader
 			//handle Exception here
 		}
 	}
-
 	/// <summary>Reads values from node Ids</summary>
 	/// <param name="nodeIdStrings">The node Ids as strings</param>
 	/// <returns>The read values as strings</returns>
 	/// <exception cref="Exception">Throws and forwards any exception with short error description.</exception>
-	/// 
-
 	#region Read Values
 
 	#region Read List Values
@@ -175,8 +173,9 @@ public class OpcReader
 			//handle Exception here
 			throw e;
 		}
-		foreach (var svResult in serviceResults.Where(svResult => svResult.ToString() != "Good"))
+		foreach (var svResult in serviceResults.Where(svResult => svResult != ServiceResult.Good))
 		{
+			// todo: describe exception
 			throw new ReadNodeException(svResult.ToString());
 		}
 		var result = values.Select(s => (T)s);
@@ -188,6 +187,7 @@ public class OpcReader
 			if (byteArr.Any()) byteArr.RemoveAll(s => s == exclude);
 
 		}
+
 		//List<object> byteArrs = result.Where(s => s is byte[]).ToList();
 		//byteArrs.ForEach(s => s = ((byte[])s).Where(b => b != exclude).ToArray());
 

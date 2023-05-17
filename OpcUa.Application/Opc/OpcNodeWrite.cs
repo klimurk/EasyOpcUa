@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MediatR;
 using Opc.Ua;
 using OpcUa.Application.Common.Mappings;
 
@@ -22,5 +23,15 @@ public class OpcWriteNodeValue : IMapWith<WriteValue>
 			.ForMember(dto => dto.AttributeId,
 				opt => opt.MapFrom(node => Attributes.Value))
 				;
+	}
+}
+
+public record OpcWriteCommand(string address, object value) : IRequest<Task> { }
+
+public class OpcWriteCommandHandler : IRequestHandler<OpcWriteCommand, Task>
+{
+	public Task<Task> Handle(OpcWriteCommand request, CancellationToken cancellationToken)
+	{
+		throw new NotImplementedException();
 	}
 }
