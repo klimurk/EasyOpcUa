@@ -10,8 +10,12 @@
 	<ItemGroup>
 		<Folder Include="Client\Commands\Disconnect\" />
 		<Folder Include="Client\Commands\Subscribe\" />
+		<Folder Include="Client\Queries\GetValue\" />
+		<Folder Include="Client\Queries\Browsings\" />
 		<Folder Include="Client\Queries\Methods\" />
 		<Folder Include="Client\Queries\Namespaces\" />
+		<Folder Include="Client\Queries\Structs\" />
+		<Folder Include="Client\Queries\Values\" />
 		<Folder Include="Contracts\" />
 		<Folder Include="Opc\NewFolder\" />
 		<Folder Include="Server\Commands\" />
@@ -20,14 +24,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="12.0.1" />
-		<PackageReference Include="FluentValidation" Version="11.5.2" />
 		<PackageReference Include="MediatR" Version="12.0.1" />
 		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.371.86" />
 		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.4.371.86" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\OpcUa.Domain\OpcUa.Domain.csproj" />
+	  <ProjectReference Include="..\OpcUa.Domain\OpcUa.Domain.csproj" />
 	</ItemGroup>
 
 </Project>

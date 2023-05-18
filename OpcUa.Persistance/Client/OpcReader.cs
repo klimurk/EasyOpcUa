@@ -126,13 +126,14 @@ public class OpcReader
 			//handle Exception here
 		}
 	}
+
+	#region Read Values
+
+	#region Read List Values
 	/// <summary>Reads values from node Ids</summary>
 	/// <param name="nodeIdStrings">The node Ids as strings</param>
 	/// <returns>The read values as strings</returns>
 	/// <exception cref="Exception">Throws and forwards any exception with short error description.</exception>
-	#region Read Values
-
-	#region Read List Values
 	public IEnumerable<T> ReadNodeListValues<T>(IOpcClient client, IEnumerable<string> nodeIdStrings) where T : struct, IComparable, IConvertible, ISpanFormattable
 	{
 		List<NodeId> nodeIds = nodeIdStrings.Select(s => new NodeId(s)).ToList();
