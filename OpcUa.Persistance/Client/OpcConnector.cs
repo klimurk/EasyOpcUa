@@ -5,6 +5,7 @@ using System.Text;
 using OpcUa.Domain;
 using OpcUa.Domain.Contracts.Client;
 using OpcUa.Application.Contratcs.Client;
+using OpcUa.Persistance.Exceptions.Connection;
 
 namespace Woodnailer.Application.Opc.Client;
 
@@ -47,7 +48,7 @@ public class OpcConnector : IOpcConnector
 			EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(applicationConfig);
 
 			//Connect to server and get endpoints
-			ConfiguredEndpoint endpoint = new(null, endpointDescription, endpointConfiguration);
+			ConfiguredEndpoint endpoint = new(collection:null, endpointDescription, endpointConfiguration);
 
 			//Create user identity
 			if (userAuth)
@@ -62,12 +63,11 @@ public class OpcConnector : IOpcConnector
 
 			client.Session = await Session.Create(
 				applicationConfig,
-				endpoint,
-				true,
+				endpoint,updateBeforeConnect:true,
 				sessionName,
 				sessionTimeout,
 				userIdentity,
-				null
+				preferredLocales:null
 				);
 
 

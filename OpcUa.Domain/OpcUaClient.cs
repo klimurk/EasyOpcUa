@@ -1,6 +1,7 @@
 ﻿using Opc.Ua;
 using Opc.Ua.Client;
 using OpcUa.Domain.Contracts.Client;
+using System.Collections.ObjectModel;
 using System.Reactive.Subjects;
 using System.Security.Cryptography.X509Certificates;
 
@@ -9,6 +10,7 @@ namespace OpcUa.Domain;
 
 public class OpcUaClient : IOpcClient
 {
+	public ObservableCollection<OpcNode> SubscribedNodes { get; private set; } = new();
 	public ReplaySubject<bool> IsOnline { get; set; }
 
 	public ApplicationConfiguration SessionApplicationConfig

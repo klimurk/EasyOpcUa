@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using Newtonsoft.Json.Linq;
 using Opc.Ua;
+using OpcUa.Application.Helpers;
 using OpcUa.Application.Opc;
 using OpcUa.Domain;
-using OpcUa.Domain.Basics;
 using OpcUa.Domain.Contracts.Client;
 using OpcUa.Persistance.Exceptions.Writer;
-using OpcUa.Persistance.Helpers;
 using System.Text;
 using System.Xml;
 

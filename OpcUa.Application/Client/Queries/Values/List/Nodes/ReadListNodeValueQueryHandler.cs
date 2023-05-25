@@ -19,7 +19,7 @@ public class ReadListNodeValueQueryHandler : IRequestHandler<ReadListNodeValueQu
         }
         catch (Exception e)
         {
-            throw new BrowsingException("Error connection while read values", e.InnerException);
+            throw new OpcConnectionException("Error connection while read values", e.InnerException);
         }
         foreach (var svResult in serviceResults.Where(svResult => svResult != ServiceResult.Good))
         {

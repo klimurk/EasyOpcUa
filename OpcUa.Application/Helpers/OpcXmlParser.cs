@@ -1,11 +1,11 @@
-﻿using OpcUa.Domain;
-using OpcUa.Domain.Basics;
-using OpcUa.Persistance.Exceptions.Related;
+﻿using Opc.Ua;
+using OpcUa.Application.Client.Exceptions;
+using OpcUa.Application.Opc;
+using OpcUa.Domain;
 using System.Text;
 using System.Xml;
-using System.Xml.Linq;
 
-namespace OpcUa.Persistance.Helpers;
+namespace OpcUa.Application.Helpers;
 
 public static class OpcXmlParser
 {
@@ -100,24 +100,24 @@ public static class OpcXmlParser
 		}
 		return varList;
 	}
-	private static dynamic SetStructureNodeValue(ref int index, ref int arrayLength, string TagName, string dataType, byte[] byteResult)
+	private static dynamic SetStructureNodeValue(ref int index, ref int arrayLength, string TagName, BuiltInType dataType, byte[] byteResult)
 	{
 		dynamic result = new object();
 		switch (dataType)
 		{
-			case OpcConstants.TypeBoolean when arrayLength <= 0:
+			case BuiltInType.Boolean when arrayLength <= 0:
 				{
 					result = BitConverter.ToBoolean(byteResult, index);
 					index++;
 					break;
 				}
-			case OpcConstants.TypeByte when arrayLength <= 0:
+			case BuiltInType.Byte when arrayLength <= 0:
 				{
 					result = byteResult[index];
 					index++;
 					break;
 				}
-			case OpcConstants.TypeByte when arrayLength > 0:
+			case BuiltInType.Byte when arrayLength > 0:
 				{
 					int[] tempArray = new int[arrayLength];
 					for (int i = 0; i < arrayLength; i++)
@@ -129,13 +129,13 @@ public static class OpcXmlParser
 					arrayLength = 0;
 					break;
 				}
-			case OpcConstants.TypeInt16 when arrayLength <= 0:
+			case BuiltInType.Int16 when arrayLength <= 0:
 				{
 					result = BitConverter.ToInt16(byteResult, index);
 					index += 2;
 					break;
 				}
-			case OpcConstants.TypeInt16 when arrayLength > 0:
+			case BuiltInType.Int16 when arrayLength > 0:
 				{
 					short[] tempArray = new short[arrayLength];
 					for (int i = 0; i < arrayLength; i++)
@@ -147,7 +147,7 @@ public static class OpcXmlParser
 					arrayLength = 0;
 					break;
 				}
-			case OpcConstants.TypeInt32 when arrayLength > 0:
+			case BuiltInType.Int32 when arrayLength > 0:
 				{
 					int[] tempArray = new int[arrayLength];
 					for (int i = 0; i < arrayLength; i++)
@@ -159,26 +159,26 @@ public static class OpcXmlParser
 					arrayLength = 0;
 					break;
 				}
-			case OpcConstants.TypeInt32 when arrayLength <= 0 && !TagName.Contains("_Size"):
+			case BuiltInType.Int32 when arrayLength <= 0 && !TagName.Contains("_Size"):
 				{
 					result = BitConverter.ToInt32(byteResult, index);
 					index += 4;
 					break;
 				}
-			case OpcConstants.TypeInt32 when TagName.Contains("_Size"):
+			case BuiltInType.Int32 when TagName.Contains("_Size"):
 				{
 					arrayLength = BitConverter.ToInt32(byteResult, index);
 					result = arrayLength;
 					index += 4;
 					break;
 				}
-			case OpcConstants.TypeInt64 when arrayLength <= 0:
+			case BuiltInType.Int64 when arrayLength <= 0:
 				{
 					result = BitConverter.ToInt64(byteResult, index);
 					index += 8;
 					break;
 				}
-			case OpcConstants.TypeInt64 when arrayLength > 0:
+			case BuiltInType.Int64 when arrayLength > 0:
 				{
 					long[] tempArray = new long[arrayLength];
 					for (int i = 0; i < arrayLength; i++)
@@ -190,7 +190,7 @@ public static class OpcXmlParser
 					arrayLength = 0;
 					break;
 				}
-			case OpcConstants.TypeUInt16 when arrayLength > 0:
+			case BuiltInType.UInt16 when arrayLength > 0:
 				{
 					ushort[] tempArray = new ushort[arrayLength];
 					for (int i = 0; i < arrayLength; i++)
@@ -202,13 +202,13 @@ public static class OpcXmlParser
 					arrayLength = 0;
 					break;
 				}
-			case OpcConstants.TypeUInt16 when arrayLength <= 0:
+			case BuiltInType.UInt16 when arrayLength <= 0:
 				{
 					result = BitConverter.ToUInt16(byteResult, index);
 					index += 2;
 					break;
 				}
-			case OpcConstants.TypeUInt32 when arrayLength > 0:
+			case BuiltInType.UInt32 when arrayLength > 0:
 				{
 					uint[] tempArray = new uint[arrayLength];
 					for (int i = 0; i < arrayLength; i++)
@@ -220,13 +220,13 @@ public static class OpcXmlParser
 					arrayLength = 0;
 					break;
 				}
-			case OpcConstants.TypeUInt32 when arrayLength <= 0:
+			case BuiltInType.UInt32 when arrayLength <= 0:
 				{
 					result = BitConverter.ToUInt32(byteResult, index);
 					index += 4;
 					break;
 				}
-			case OpcConstants.TypeUInt64 when arrayLength > 0:
+			case BuiltInType.UInt64 when arrayLength > 0:
 				{
 					ulong[] tempArray = new ulong[arrayLength];
 					for (int i = 0; i < arrayLength; i++)
@@ -238,19 +238,19 @@ public static class OpcXmlParser
 					arrayLength = 0;
 					break;
 				}
-			case OpcConstants.TypeUInt64 when arrayLength <= 0:
+			case BuiltInType.UInt64 when arrayLength <= 0:
 				{
 					result = BitConverter.ToUInt64(byteResult, index);
 					index += 8;
 					break;
 				}
-			case OpcConstants.TypeFloat when arrayLength <= 0:
+			case BuiltInType.Float when arrayLength <= 0:
 				{
 					result = BitConverter.ToSingle(byteResult, index);
 					index += 4;
 					break;
 				}
-			case OpcConstants.TypeFloat when arrayLength > 0:
+			case BuiltInType.Float when arrayLength > 0:
 				{
 					float[] tempArray = new float[arrayLength];
 					for (int i = 0; i < arrayLength; i++)
@@ -262,13 +262,13 @@ public static class OpcXmlParser
 					arrayLength = 0;
 					break;
 				}
-			case OpcConstants.TypeDouble when arrayLength <= 0:
+			case BuiltInType.Double when arrayLength <= 0:
 				{
 					result = BitConverter.ToDouble(byteResult, index);
 					index += 8;
 					break;
 				}
-			case OpcConstants.TypeDouble when arrayLength > 0:
+			case BuiltInType.Double when arrayLength > 0:
 				{
 					double[] tempArray = new double[arrayLength];
 					for (int i = 0; i < arrayLength; i++)
@@ -280,7 +280,7 @@ public static class OpcXmlParser
 					arrayLength = 0;
 					break;
 				}
-			case OpcConstants.TypeString when arrayLength <= 0:
+			case BuiltInType.String when arrayLength <= 0:
 				{
 					int stringLength = BitConverter.ToInt32(byteResult, index);
 					index += 4;
@@ -291,7 +291,7 @@ public static class OpcXmlParser
 					}
 					break;
 				}
-			case OpcConstants.TypeString when arrayLength > 0:
+			case BuiltInType.String when arrayLength > 0:
 				{
 					for (int i = 0; i < arrayLength; i++)
 					{
@@ -306,7 +306,7 @@ public static class OpcXmlParser
 					arrayLength = 0;
 					break;
 				}
-			case OpcConstants.TypeCharArray:
+			case BuiltInType.Enumeration:
 				{
 					int stringLength = BitConverter.ToInt32(byteResult, index);
 					index += 4;
@@ -317,9 +317,9 @@ public static class OpcXmlParser
 					}
 					break;
 				}
-			case string a when a.Contains(OpcConstants.TypeStruct) && arrayLength <= 0:
+			case BuiltInType.ExpandedNodeId when arrayLength <= 0:
 				{
-					result = OpcConstants.TypeStruct;
+					result = BuiltInType.ExpandedNodeId;
 					break;
 				}
 			default:

@@ -1,8 +1,7 @@
-﻿using OpcUa.Domain;
-using OpcUa.Domain.Basics;
-using OpcUa.Persistance.Exceptions.Related;
+﻿using OpcUa.Application.Opc;
+using OpcUa.Domain;
 
-namespace OpcUa.Persistance.Helpers;
+namespace OpcUa.Application.Helpers;
 
 public static class OpcWriterHelper
 {
@@ -13,7 +12,7 @@ public static class OpcWriterHelper
 	public static long GetLengthOfDataToWrite(OpcNode dataToWrite)
 	{
 
-		length = GetLengthOfData(dataToWrite);
+		long length = GetLengthOfData(dataToWrite);
 		return length;
 	}
 

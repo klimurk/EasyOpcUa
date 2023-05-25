@@ -8,7 +8,7 @@ namespace OpcUa.Application.Client.Queries.Browsings.Nodes;
 
 /// <summary>Browses a node ID provided by a Node</summary>
 /// <returns>ReferenceDescriptionCollection of found nodes</returns>
-/// <exception cref="BrowsingException">Throws and forwards exception while have error while browsing.</exception>
+/// <exception cref="OpcConnectionException">Throws and forwards exception while have error while browsing.</exception>
 public class BrowseNodeQueryHandler : IRequestHandler<BrowseNodeQuery, ReferenceDescriptionCollection?>
 {
     public async Task<ReferenceDescriptionCollection?> Handle(BrowseNodeQuery request, CancellationToken cancellationToken)
@@ -32,7 +32,7 @@ public class BrowseNodeQueryHandler : IRequestHandler<BrowseNodeQuery, Reference
         catch (Exception e)
         {
             //handle Exception here
-            throw new BrowsingException("Error while browsing", e.InnerException);
+            throw new OpcConnectionException("Error while browsing", e.InnerException);
         }
         return referenceDescriptionCollection;
     }

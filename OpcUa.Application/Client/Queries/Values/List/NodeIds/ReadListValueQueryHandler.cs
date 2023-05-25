@@ -13,17 +13,17 @@ public class ReadListValueQueryHandler : IRequestHandler<ReadListValueQuery, Opc
 {
     public async Task<OpcReadListResult> Handle(ReadListValueQuery request, CancellationToken cancellationToken)
     {
-        List<NodeId> nodeIds = request.nodeIdStrings.Select(s => new NodeId(s)).ToList();
+        List<NodeId> nodeIds = request.NodeIds.Select(s => new NodeId(s)).ToList();
         DataValueCollection values = new();
         IList<ServiceResult> serviceResults = new List<ServiceResult>();
-        List<Type> types = Enumerable.Repeat(request.ExpectedType, nodeIds.Count).ToList();
+        List<BuiltInType> types = Enumerable.Repeat(request.ExpectedType, nodeIds.Count).ToList();
         try
         {
-            request.client.Session.ReadValues(nodeIds, out values, out serviceResults);
+            request.Client.Session.ReadValues(nodeIds, out values, out serviceResults);
         }
         catch (Exception e)
         {
-            throw new BrowsingException("Error connection while read values", e.InnerException);
+            throw new OpcConnectionException("Error connection while read values", e.InnerException);
         }
         foreach (var svResult in serviceResults.Where(svResult => svResult != ServiceResult.Good))
         {

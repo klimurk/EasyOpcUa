@@ -9,7 +9,7 @@ public class BrowseRootQueryAsyncHandler : IRequestHandler<BrowseRootQuery, Refe
 
 	/// <summary>Browses the root folder of an OPC UA server.</summary>
 	/// <returns>ReferenceDescriptionCollection of found nodes</returns>
-	/// <exception cref="BrowsingException">Throws and forwards exception while have error while browsing.</exception>
+	/// <exception cref="OpcConnectionException">Throws and forwards exception while have error while browsing.</exception>
 	public async Task<ReferenceDescriptionCollection?> Handle(BrowseRootQuery request, CancellationToken cancellationToken)
     {
 
@@ -26,7 +26,7 @@ public class BrowseRootQueryAsyncHandler : IRequestHandler<BrowseRootQuery, Refe
         }
         catch (Exception e)
         {
-            throw new BrowsingException("Error while browsing",e.InnerException);
+            throw new OpcConnectionException("Error while browsing",e.InnerException);
         }
         var collection = response.Results.Select(s => s.References).First(s => s.Count > 0) ;
         return collection;

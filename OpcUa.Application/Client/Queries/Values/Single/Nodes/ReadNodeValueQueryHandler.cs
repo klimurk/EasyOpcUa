@@ -5,17 +5,17 @@ namespace OpcUa.Application.Client.Queries.Values.List.Nodes;
 
 public class ReadNodeValueQueryHandler : IRequestHandler<ReadNodeValueQuery, object>
 {
-    public async Task<object> Handle(ReadNodeValueQuery request, CancellationToken cancellationToken)
-    {
-        object result;
-        try
-        {
+	public async Task<object> Handle(ReadNodeValueQuery request, CancellationToken cancellationToken)
+	{
+		object result;
+		try
+		{
 			result = request.client.Session.ReadValue(request.nodes.NodeId, request.ExpectedType);
-        }
-        catch (Exception e)
-        {
-            throw new BrowsingException("Error connection while read values", e.InnerException);
-        }
-        return result;
-    }
+		}
+		catch (Exception e)
+		{
+			throw new OpcConnectionException("Error connection while read values", e.InnerException);
+		}
+		return result;
+	}
 }

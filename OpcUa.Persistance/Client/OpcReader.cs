@@ -2,11 +2,12 @@
 using Opc.Ua.Client;
 using OpcUa.Domain.Contracts.Client;
 using System.Text;
-using OpcUa.Persistance.Helpers;
 using OpcUa.Persistance.Exceptions.Reader;
 using OpcUa.Persistance.Exceptions.Related;
-using OpcUa.Domain.Basics;
 using Newtonsoft.Json.Schema;
+using OpcUa.Application.Opc;
+using OpcUa.Domain;
+using OpcUa.Application.Helpers;
 
 namespace Woodnailer.Application.Opc.Client;
 

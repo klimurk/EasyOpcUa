@@ -11,13 +11,13 @@ public class GetNodeQueryHandler : IRequestHandler<GetNodeQuery, Node?>
 {
 	public async Task<Node?> Handle(GetNodeQuery request, CancellationToken cancellationToken)
 	{
-		ArgumentNullException.ThrowIfNull(request.client);
-		string idString = request.nodeIdString.Trim();
+		ArgumentNullException.ThrowIfNull(request.Client);
+		string idString = request.NodeId.Trim();
 		ArgumentException.ThrowIfNullOrEmpty(idString);
 		Node result;
 		try
 		{
-			result = request.client.Session.ReadNode(new NodeId(idString));
+			result = request.Client.Session.ReadNode(new NodeId(idString));
 		}
 		catch (Exception e)
 		{

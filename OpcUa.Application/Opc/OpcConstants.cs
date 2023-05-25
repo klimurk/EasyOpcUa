@@ -1,4 +1,4 @@
-﻿namespace OpcUa.Domain;
+﻿namespace OpcUa.Application.Opc;
 
 public static class OpcConstants
 {

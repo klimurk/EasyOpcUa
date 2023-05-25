@@ -6,7 +6,7 @@ namespace OpcUa.Application.Client.Queries.Browsings.Inner;
 
 /// <summary>Browses a node has inner nodes</summary>
 /// <returns>Bool</returns>
-/// <exception cref="BrowsingException">Throws and forwards exception while have error while browsing.</exception>
+/// <exception cref="OpcConnectionException">Throws and forwards exception while have error while browsing.</exception>
 public class ReferenceHasInnerQueryHandler : IRequestHandler<ReferenceHasInnerQuery, bool>
 {
 	public async Task<bool> Handle(ReferenceHasInnerQuery request, CancellationToken cancellationToken)
@@ -22,7 +22,7 @@ public class ReferenceHasInnerQueryHandler : IRequestHandler<ReferenceHasInnerQu
 		catch (Exception e)
 		{
 			//handle Exception here
-			throw new BrowsingException("Error while browsing", e.InnerException);
+			throw new OpcConnectionException("Error while browsing", e.InnerException);
 		}
 		return referenceDescriptionCollection?.Count > 0; ;
 	}

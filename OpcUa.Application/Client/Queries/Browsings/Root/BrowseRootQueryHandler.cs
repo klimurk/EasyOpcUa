@@ -6,7 +6,7 @@ namespace OpcUa.Application.Client.Queries.Browsings.Root;
 
 /// <summary>Browses the root folder of an OPC UA server.</summary>
 /// <returns>ReferenceDescriptionCollection of found nodes</returns>
-/// <exception cref="BrowsingException">Throws and forwards exception while have error while browsing.</exception>
+/// <exception cref="OpcConnectionException">Throws and forwards exception while have error while browsing.</exception>
 public class BrowseRootQueryHandler : IRequestHandler<BrowseRootQuery, ReferenceDescriptionCollection>
 {
     public async Task<ReferenceDescriptionCollection> Handle(BrowseRootQuery request, CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ public class BrowseRootQueryHandler : IRequestHandler<BrowseRootQuery, Reference
         catch (Exception e)
         {
             // exception
-            throw new BrowsingException("Error while try browsing", e.InnerException);
+            throw new OpcConnectionException("Error while try browsing", e.InnerException);
         }
         return referenceDescriptionCollection;
     }

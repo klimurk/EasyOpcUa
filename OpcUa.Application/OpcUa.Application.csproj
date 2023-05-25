@@ -13,7 +13,6 @@
 		<Folder Include="Client\Queries\Methods\" />
 		<Folder Include="Client\Queries\Namespaces\" />
 		<Folder Include="Contracts\" />
-		<Folder Include="Opc\NewFolder\" />
 		<Folder Include="Server\Commands\" />
 		<Folder Include="Server\Queries\" />
 	</ItemGroup>

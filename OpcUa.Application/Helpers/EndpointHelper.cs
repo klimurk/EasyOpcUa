@@ -1,7 +1,7 @@
 ﻿using Opc.Ua;
-using OpcUa.Persistance.Exceptions.Connection;
+using OpcUa.Application.Client.Exceptions;
 
-namespace OpcUa.Helpers;
+namespace OpcUa.Application.Helpers;
 
 internal class EndpointHelper
 {

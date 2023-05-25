@@ -15,7 +15,7 @@ public class ReadValueQueryHandler : IRequestHandler<ReadValueQuery, object>
 		}
 		catch (Exception e)
 		{
-			throw new BrowsingException("Error connection while read values", e.InnerException);
+			throw new OpcConnectionException("Error connection while read values", e.InnerException);
 		}
 		return result;
 	}
