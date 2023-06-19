@@ -1,0 +1,22 @@
+﻿
+@page "/"
+@using MediatR;
+@using OpcUa.Persistance;
+@inject OpcControllerService opcController;
+@inject IMediator mediatr;
+@inject ILogger<Index> logger;
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        logger.LogDebug("OnInitializedAsync");
+        opcController.CheckList();
+        await base.OnInitializedAsync();
+    }
+}

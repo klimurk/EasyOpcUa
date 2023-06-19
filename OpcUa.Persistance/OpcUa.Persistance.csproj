@@ -8,20 +8,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Helpers\" />
-		<Folder Include="Server\" />
+		<PackageReference Include="FluentValidation" Version="11.5.2" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
+		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.371.91" />
+		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.4.371.91" />
+		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.4.371.91" />
+		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Core" Version="1.4.371.91" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.371.86" />
-		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.4.371.86" />
-		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.4.371.86" />
-		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Core" Version="1.4.371.86" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\Extension\Extensions\Extensions.csproj" />
-		<ProjectReference Include="..\OpcUa.Application\OpcUa.Application.csproj" />
+		<ProjectReference Include="..\OpcUa.Applications\OpcUa.Applications.csproj" />
+		<ProjectReference Include="..\OpcUa.Client.Applications\OpcUa.Client.Applications.csproj" />
 		<ProjectReference Include="..\OpcUa.Domain\OpcUa.Domain.csproj" />
 	</ItemGroup>
 

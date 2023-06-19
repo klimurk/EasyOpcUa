@@ -1,3 +1,3 @@
-﻿namespace Woodnailer.Application.Opc.Client;
+﻿//namespace OpcUa.Persistance.Client;
 
-public class OpcInitializer { }
+//public class OpcInitializer { }

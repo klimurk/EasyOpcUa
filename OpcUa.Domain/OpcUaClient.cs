@@ -11,7 +11,7 @@ namespace OpcUa.Domain;
 public class OpcUaClient : IOpcClient
 {
 	public ObservableCollection<OpcNode> SubscribedNodes { get; private set; } = new();
-	public ReplaySubject<bool> IsOnline { get; set; }
+	public ReplaySubject<bool> IsOnline { get; set; } = new(1);
 
 	public ApplicationConfiguration SessionApplicationConfig
 	{

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "OpcUa.Console": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

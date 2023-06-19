@@ -1,0 +1,117 @@
+﻿@inherits LayoutComponentBase
+<PageTitle>Woodnailer.Image</PageTitle>
+
+
+<MudThemeProvider Theme="MyCustomTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h5" Class="mt-1">Woodnailer</MudText>
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <div class="p-2">
+
+            @Body
+        </div>
+    </MudMainContent>
+</MudLayout>
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            Palette = new PaletteLight()
+            {
+                //Black = "#272c34ff",
+                //White = "#272c34ff",
+                //TextDisabled = "#272c34ff",
+
+                Primary = "#194A9E",
+                PrimaryContrastText = "#ffffffff",
+                PrimaryDarken = "#737CB0",
+                PrimaryLighten = "#EBEEFF",
+                //TextPrimary = "#272c34ff",
+                Secondary = "#DED835",
+                SecondaryContrastText = "#ffffffff",
+                SecondaryDarken = "#A49E67",
+                SecondaryLighten = "#F8F2CB",
+                //TextSecondary = "#272c34ff",
+                Tertiary = "#35DE8C",
+                TertiaryContrastText = "#ffffffff",
+                TertiaryDarken = "#609A77",
+                TertiaryLighten = "#D2FAE0",
+                Info = "#35B9DE",
+                InfoContrastText = "#ffffffff",
+                InfoDarken = "#0084A7",
+                InfoLighten = "#C3F9FF",
+                Success = "#35DE54",
+                SuccessContrastText = "#ffffffff",
+                SuccessDarken = "#6C976B",
+                SuccessLighten = "#DBF9D8",
+                Warning = "#DE9D35",
+                WarningContrastText = "#005248",
+                WarningDarken = "#907044",
+                WarningLighten = "#FFECCC",
+                Error = "#DE3551",
+                ErrorContrastText = "#ffffffff",
+                ErrorDarken = "#6A0000",
+                ErrorLighten = "#BFA5A5",
+                //Dark = "#272c34ff",
+                //DarkContrastText = "#272c34ff",
+                //ActionDefault = "#272c34ff",
+                //ActionDisabled = "#272c34ff",
+                //ActionDisabledBackground = "#272c34ff",
+                //Background ="#DFE5EE",
+                //BackgroundGrey = "#272c34ff",
+                //Surface = "#272c34ff",
+                //DrawerBackground = "#272c34ff",
+                //DrawerText = "#272c34ff",
+                //DrawerIcon = "#272c34ff",
+                AppbarBackground = "#3575DF",
+                //AppbarText = "#272c34ff",
+                //LinesDefault = "#272c34ff",
+                //LinesInputs = "#272c34ff",
+                //TableLines = "#272c34ff",
+                //TableStriped = "#272c34ff",
+                //TableHover = "#272c34ff",
+                //Divider = "#272c34ff",
+                //DividerLight = "#272c34ff",
+
+                //DarkDarken = "#272c34ff",
+                //DarkLighten = "#272c34ff",
+                //GrayDefault = "#272c34ff",
+                //GrayLight = "#272c34ff",
+                //GrayLighter = "#272c34ff",
+                //GrayDark = "#272c34ff",
+                //GrayDarker = "#272c34ff",
+                //OverlayDark = "#272c34ff",
+                //OverlayLight = "#272c34ff"
+            },
+            //PaletteDark = new PaletteDark()
+            //{
+            //    Primary = Colors.Blue.Lighten1
+            //},
+
+            //LayoutProperties = new LayoutProperties()
+            //{
+            //    DrawerWidthLeft = "260px",
+            //    DrawerWidthRight = "300px"
+            //}
+        };
+}
