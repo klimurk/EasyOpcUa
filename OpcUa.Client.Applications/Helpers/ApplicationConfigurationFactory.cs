@@ -7,108 +7,127 @@ using Opc.Ua.Server;
 
 namespace OpcUa.Client.Applications.Helpers;
 
-internal static class ApplicationConfigurationFactory
+internal class ApplicationConfigurationFactory
 {
-    public async static Task<ApplicationConfiguration> Create(
-        string appName = "UA Client 1500", string appUri = "urn:MyClient",
-        string certificateIdentifierStorePath = "CurrentUserStore\\Store", string certificateStoreType = CertificateStoreType.X509Store,
-        int operationTimeout = 60000, int maxStringLength = 67108864, int MaxByteStringLength = 16777216,
-        string certificateTrustStorePath = "CurrentUser\\Root"
-        )
+    string _AppName = "UA Client 1500";
+    string _AppUri = "urn:MyClient";
+    ushort _CertificateMonthLifetime = 24;
+    string _ProductUri = "SiemensAG.IndustryOnlineSupport";
+    int _OperationTimeout = 60000;
+    int _SessionTimeout = 360000;
+    int _MaxStringLength = 67108864;
+    int _MaxByteStringLength = 16777216;
+    CertificateTrustList TrustedIssuerCertificates = new()
     {
-        // The application configuration can be loaded from any file.
-        // ApplicationConfiguration.Load() method loads configuration by looking up a file path in the App.config.
-        // This approach allows applications to share configuration files and to update them.
-        // This example creates a minimum ApplicationConfiguration using its default constructor.
-        var certificate = new CertificateIdentifier()
+        StoreType = CertificateStoreType.X509Store,
+        StorePath = "CurrentUser\\Root"
+    };
+    CertificateTrustList TrustedPeerCertificates = new()
+    {
+        StoreType = CertificateStoreType.X509Store,
+        StorePath = "CurrentUser\\Root"
+    };
+    private CertificateIdentifier ApplicationCertificate = new()
+    {
+        StoreType = CertificateStoreType.X509Store,
+        StorePath = "CurrentUser\\My",
+        SubjectName = "UA Client 1500"
+    };
+    public ApplicationConfigurationFactory() { }
+    public ApplicationConfigurationFactory WithTrustedPeerCertificates(
+        string certificateStoreType = CertificateStoreType.X509Store,
+        string storePath = "CurrentUser\\Root")
+    {
+        TrustedPeerCertificates = new()
         {
             StoreType = certificateStoreType,
-            StorePath = certificateIdentifierStorePath,
-            SubjectName = appName
+            StorePath = storePath
         };
-        ApplicationConfiguration configuration = new()
-        {
-            // Step 1 - Specify the client identity.
-            ApplicationName = appName,
-            ApplicationType = ApplicationType.Client,
-            ApplicationUri = appUri, //Kepp this syntax
-
-            // Step 2 - Specify the client's application instance certificate.
-            // Application instance certificates must be placed in a windows certficate store because that is
-            // the best way to protect the private key. Certificates in a store are identified with 4 parameters:
-            // StoreLocation, StoreName, SubjectName and Thumbprint.
-            // When using StoreType = Directory you need to have the opc.ua.certificategenerator.exe installed on your machine
-
-            SecurityConfiguration = new SecurityConfiguration()
-            {
-                ApplicationCertificate = certificate,
-                AutoAcceptUntrustedCertificates = true,
-                RejectSHA1SignedCertificates = false,
-            },
-            TransportQuotas = new TransportQuotas
-            {
-                OperationTimeout = operationTimeout,
-                //SecurityTokenLifetime = 86400000,
-                MaxStringLength = maxStringLength,
-                MaxByteStringLength = MaxByteStringLength //Needed, i.e. for large TypeDictionarys
-            },
-            //ClientConfiguration = new ClientConfiguration
-            //{
-            //	DefaultSessionTimeout = 60000
-            //}
-        };
-
-        var trustlist = new CertificateTrustList()
-        {
-            StoreType = certificateStoreType,
-            StorePath = certificateTrustStorePath
-        };
-        // Define trusted root store for server certificate checks
-        configuration.SecurityConfiguration.TrustedIssuerCertificates = trustlist;
-        configuration.SecurityConfiguration.TrustedPeerCertificates = trustlist;
-        X509Certificate2 clientCertificate = new();
-        // find the client certificate in the store.
-        try
-        {
-            clientCertificate = await configuration.SecurityConfiguration.ApplicationCertificate.Find(true);
-        }
-        catch
-        {
-            var builder = CertificateBuilder.Create(string.Empty);
-            clientCertificate = builder.CreateForRSA();
-        }
-
-
-        // This step checks if the configuration is consistent and assigns a few internal variables
-        // that are used by the SDK. This is called automatically if the configuration is loaded from
-        // a file using the ApplicationConfiguration.Load() method.
-        await configuration.Validate(ApplicationType.Client);
-        return configuration;
+        return this;
     }
-    public static ApplicationConfiguration CreateClientConfiguration(string appName = "UA Client 1500", string appUri = "urn:MyClient",
-        string productUri = "SiemensAG.IndustryOnlineSupport",
-        string appCertificatePath = "CurrentUser\\My",
-        ushort certificateMonthLifetime = 24,
-        string certificateIdentifierStorePath = "CurrentUserStore\\Store",
-        int operationTimeout = 60000, int maxStringLength = 67108864, int MaxByteStringLength = 16777216,
-        string certificateTrustStorePath = "CurrentUser\\Root")
+    public ApplicationConfigurationFactory WithTrustedIssuerCertificates(
+        string certificateStoreType = CertificateStoreType.X509Store,
+        string storePath = "CurrentUser\\Root")
+    {
+        TrustedIssuerCertificates = new()
+        {
+            StoreType = certificateStoreType,
+            StorePath = storePath
+        };
+        return this;
+    }
+    public ApplicationConfigurationFactory WithApplicationCertificate(
+      string certificateStoreType = CertificateStoreType.X509Store,
+      string appCertificatePath = "CurrentUser\\My",
+      string subjectName = "UA Client 1500")
+    {
+        ApplicationCertificate = new CertificateIdentifier()
+        {
+            StoreType = certificateStoreType,
+            StorePath = appCertificatePath,
+            SubjectName = subjectName
+        };
+        return this;
+    }
+    public ApplicationConfigurationFactory WithAppName(string appName)
+    {
+        _AppName = appName;
+        return this;
+    }
+    public ApplicationConfigurationFactory WithAppUri(string appUri)
+    {
+        _AppUri = appUri;
+        return this;
+    }
+    public ApplicationConfigurationFactory WithProductUri(string productUri)
+    {
+        _ProductUri = productUri;
+        return this;
+    }
+
+
+
+    public ApplicationConfigurationFactory WithOperationTimeout(int operationTimeout)
+    {
+        _OperationTimeout = operationTimeout;
+        return this;
+    }
+    public ApplicationConfigurationFactory WithMaxStringLength(int maxStringLength)
+    {
+        _MaxStringLength = maxStringLength;
+        return this;
+    }
+    public ApplicationConfigurationFactory WithSessionTimeout(int sessionTimeout)
+    {
+        _SessionTimeout = sessionTimeout;
+        return this;
+    }
+    public ApplicationConfigurationFactory WithCertificateLifetime(ushort certificateMonthLifetime)
+    {
+        _CertificateMonthLifetime = certificateMonthLifetime;
+        return this;
+    }
+    public ApplicationConfigurationFactory WithMaxByteStringLength(int MaxByteStringLength)
+    {
+        _MaxByteStringLength = MaxByteStringLength;
+        return this;
+    }
+
+
+    public async Task<ApplicationConfiguration> CreateAsync()
     {
         // The application configuration can be loaded from any file.
         // ApplicationConfiguration.Load() method loads configuration by looking up a file path in the App.config.
         // This approach allows applications to share configuration files and to update them.
         // This example creates a minimum ApplicationConfiguration using its default constructor.
-        var trustList = new CertificateTrustList()
-        {
-            StoreType = CertificateStoreType.X509Store,
-            StorePath = certificateTrustStorePath
-        };
+
         ApplicationConfiguration configuration = new()
         {
             // Step 1 - Specify the client identity.
-            ApplicationName = appName,
+            ApplicationName = _AppName,
             ApplicationType = ApplicationType.Client,
-            ApplicationUri = appUri, //Kepp this syntax
-            ProductUri = productUri,
+            ApplicationUri = _AppUri, //Kepp this syntax
+            ProductUri = _ProductUri,
 
             // Step 2 - Specify the client's application instance certificate.
             // Application instance certificates must be placed in a windows certficate store because that is
@@ -118,32 +137,21 @@ internal static class ApplicationConfigurationFactory
 
             SecurityConfiguration = new SecurityConfiguration
             {
-                ApplicationCertificate = new CertificateIdentifier()
-                {
-                    StoreType = CertificateStoreType.X509Store,
-                    StorePath = appCertificatePath,
-                    SubjectName = appName
-                },
+                ApplicationCertificate = ApplicationCertificate,
                 AutoAcceptUntrustedCertificates = true,
                 RejectSHA1SignedCertificates = false,
-                TrustedIssuerCertificates = trustList,
-                TrustedPeerCertificates = trustList
+                TrustedIssuerCertificates = TrustedIssuerCertificates,
+                TrustedPeerCertificates = TrustedPeerCertificates
             }
         };
 
-        // Define trusted root store for server certificate checks
-        //configuration.SecurityConfiguration.TrustedIssuerCertificates.StoreType = CertificateStoreType.X509Store;
-        //configuration.SecurityConfiguration.TrustedIssuerCertificates.StorePath = "CurrentUser\\Root";
-        //configuration.SecurityConfiguration.TrustedPeerCertificates.StoreType = CertificateStoreType.X509Store;
-        //configuration.SecurityConfiguration.TrustedPeerCertificates.StorePath = "CurrentUser\\Root";
-
         // find the client certificate in the store.
-        Task<X509Certificate2> clientCertificate = configuration.SecurityConfiguration.ApplicationCertificate.Find(needPrivateKey: true);
+        X509Certificate2 clientCertificate = await configuration.SecurityConfiguration.ApplicationCertificate.Find(needPrivateKey: true);
 
         // create a new self signed certificate if not found.
-        if (clientCertificate.Result == null)
+        if (clientCertificate == null)
         {
-            CreateCertificate(configuration, certificateMonthLifetime);
+            CreateCertificate(configuration);
         }
 
         // Step 3 - Specify the supported transport quotas.
@@ -152,28 +160,28 @@ internal static class ApplicationConfigurationFactory
         // reasonable values.
         configuration.TransportQuotas = new TransportQuotas
         {
-            OperationTimeout = operationTimeout,
+            OperationTimeout = _OperationTimeout,
             //SecurityTokenLifetime = 86400000,
-            MaxStringLength = 67108864,
-            MaxByteStringLength = 16777216 //Needed, i.e. for large TypeDictionarys
+            MaxStringLength = _MaxStringLength,
+            MaxByteStringLength = _MaxByteStringLength //Needed, i.e. for large TypeDictionarys
         };
 
         // Step 4 - Specify the client specific configuration.
         configuration.ClientConfiguration = new ClientConfiguration
         {
-            DefaultSessionTimeout = 360000
+            DefaultSessionTimeout = _SessionTimeout
         };
 
         // Step 5 - Validate the configuration.
         // This step checks if the configuration is consistent and assigns a few internal variables
         // that are used by the SDK. This is called automatically if the configuration is loaded from
         // a file using the ApplicationConfiguration.Load() method.
-        configuration.Validate(ApplicationType.Client);
+        await configuration.Validate(ApplicationType.Client);
 
         return configuration;
     }
 
-    private static void CreateCertificate(ApplicationConfiguration configuration, ushort certificateMonthLifetime = 24)
+    private void CreateCertificate(ApplicationConfiguration configuration)
     {
         // Get local interface ip addresses and DNS name
         List<string> localIps = GetLocalIpAddressAndDns();
@@ -195,7 +203,7 @@ internal static class ApplicationConfigurationFactory
             localIps,
             keySize,
             DateTime.UtcNow,
-            certificateMonthLifetime,
+            _CertificateMonthLifetime,
             algorithm);
     }
 

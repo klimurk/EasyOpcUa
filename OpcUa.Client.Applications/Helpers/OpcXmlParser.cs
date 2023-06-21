@@ -1,5 +1,4 @@
 ﻿using Opc.Ua;
-using OpcUa.Applications.Errors;
 using OpcUa.Domain;
 using System.Runtime.Serialization;
 using System.Text;
@@ -61,24 +60,24 @@ public static class OpcXmlParser
 		}
 
 		//get child nodes of parent node with attribute name == "stringToParseFor" and parse for var name and var type
-		foreach (XmlNode xmlNode in foundNode.ChildNodes)
-		{
-			string? name = xmlNode.Attributes["Name"]?.Value;
-			string? typeName = xmlNode.Attributes["TypeName"]?.Value;
-			if (typeName is null || name is null) continue;
-			OpcNode node = new()
-			{
-				Name = name
-			};
-			bool isStruct = typeName.Contains(structDefinitionString);
-			typeName = typeName.Remove(0, structDefinitionString.Length);
-			//node.DataType = typeName;
-			if (isStruct)
-			{
-				node.InnerNodes = ExtractInnerNodes(nodeList, typeName);
-			}
-			result.Add(node);
-		}
+		//foreach (XmlNode xmlNode in foundNode.ChildNodes)
+		//{
+		//	string? name = xmlNode.Attributes["Name"]?.Value;
+		//	string? typeName = xmlNode.Attributes["TypeName"]?.Value;
+		//	if (typeName is null || name is null) continue;
+		//	OpcNode node = new()
+		//	{
+		//		Name = name
+		//	};
+		//	bool isStruct = typeName.Contains(structDefinitionString);
+		//	typeName = typeName.Remove(0, structDefinitionString.Length);
+		//	//node.DataType = typeName;
+		//	if (isStruct)
+		//	{
+		//		node.InnerNodes = ExtractInnerNodes(nodeList, typeName);
+		//	}
+		//	result.Add(node);
+		//}
 		return result;
 	}
 
@@ -95,7 +94,7 @@ public static class OpcXmlParser
 		{
 			foreach (OpcNode val in node.InnerNodes)
 			{
-				val.DataValue = SetStructureNodeValue(ref index, ref arraylength, val.Name, val.DataType, byteResult);
+				val.Data.OnNext(SetStructureNodeValue(ref index, ref arraylength, val.Name, val.DataType, byteResult));
 			}
 		}
 		return varList;

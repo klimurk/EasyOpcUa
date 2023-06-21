@@ -1,28 +1,19 @@
 ﻿using Opc.Ua.Client;
 using Opc.Ua;
 using System.Collections.ObjectModel;
+using FluentResults;
 
 namespace OpcUa.Domain.Contracts.Client;
 
 public interface IOpcClient
 {
-	Session Session { get; set; }
-	ApplicationConfiguration SessionApplicationConfig { get; }
-	ObservableCollection<OpcNode> SubscribedNodes { get; }
-	/// <summary>
-	/// Provides the event handling for server certificates.
-	/// </summary>
-	public CertificateValidationEventHandler CertificateValidationNotification { get; set; }
-
-	/// <summary>
-	/// Provides the event for a monitored event item.
-	/// </summary>
-	public NotificationEventHandler NotificationEventNotification { get; set; }
-
-
-	/// <summary>
-	/// Provides the event for KeepAliveNotifications.
-	/// </summary>
-	public KeepAliveEventHandler KeepAliveNotification { get; set; }
-
+    string Id { get; }
+    ApplicationConfiguration AppConfiguration { get; }
+    ISession Session { get; }
+    string Name { get; set; }
+    public Subscription Subscription { get; }
+    IDictionary<string, OpcNode> SubscribedNodes{ get; }
+    public MonitoredItemNotificationEventHandler ItemChangedNotification { get; set; }
+    public Result CreateSubscription(int publishingInterval);
+    public Result RemoveSubscription(bool isSilent = true);
 }

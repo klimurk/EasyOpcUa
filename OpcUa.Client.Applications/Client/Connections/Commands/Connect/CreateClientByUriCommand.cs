@@ -2,10 +2,12 @@
 using MediatR;
 using Opc.Ua;
 using Opc.Ua.Client;
-using OpcUa.Applications.Errors;
+using OpcUa.Domain.Errors;
 using OpcUa.Client.Applications.Helpers;
 using OpcUa.Domain;
 using OpcUa.Domain.Contracts.Client;
+//using Opc.Ua.Server;
+using Session = Opc.Ua.Client.Session;
 
 namespace OpcUa.Client.Applications.Client.Connections.Commands.Connect;
 
@@ -21,7 +23,9 @@ public class CreateClientByUriCommandHandler : IRequestHandler<CreateClientByUri
 {
     public async Task<Result<IOpcClient>> Handle(CreateClientByUriCommand request, CancellationToken cancellationToken)
     {
-        var applicationConfig = request.clientAppConfig is null ? ApplicationConfigurationFactory.CreateClientConfiguration() : request.clientAppConfig;
+        var applicationConfig = request.clientAppConfig is null ? 
+            await new ApplicationConfigurationFactory().CreateAsync() :
+            request.clientAppConfig;
 
         try
         {
@@ -32,15 +36,15 @@ public class CreateClientByUriCommandHandler : IRequestHandler<CreateClientByUri
         {
             return Result.Fail(new ClientCertificateValidationError(applicationConfig, e));
         }
-        IOpcClient client = new OpcUaClient(applicationConfig);
 
         //Create EndPoint configuration
         EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(applicationConfig);
         //Connect to server and get endpoints
         ConfiguredEndpoint endpoint = new(collection: null, request.EndpointDescription, endpointConfiguration);
+        Session session;
         try
         {
-            client.Session = await Session.Create(
+            session = await Session.Create(
                 applicationConfig,
                 endpoint,
                 updateBeforeConnect: true,
@@ -52,9 +56,9 @@ public class CreateClientByUriCommandHandler : IRequestHandler<CreateClientByUri
         }
         catch (Exception e)
         {
-            return Result.Fail(new ConnectServerError(request.EndpointDescription, request.UserIdentity, request.clientAppConfig, e));
+            return Result.Fail(new ServerConnectionError(request.EndpointDescription, request.UserIdentity, request.clientAppConfig, e));
         }
-        return Result.Ok(client);
+        return new OpcUaClient(applicationConfig, session);
     }
 
 }

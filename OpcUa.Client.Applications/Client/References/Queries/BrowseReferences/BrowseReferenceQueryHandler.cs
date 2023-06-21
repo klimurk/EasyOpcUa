@@ -1,7 +1,7 @@
 ﻿using FluentResults;
 using MediatR;
 using Opc.Ua;
-using OpcUa.Applications.Errors;
+using OpcUa.Domain.Errors;
 
 namespace OpcUa.Client.Applications.Client.References.Queries.BrowseReferences;
 

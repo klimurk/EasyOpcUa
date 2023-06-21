@@ -1,6 +1,6 @@
 ﻿using FluentResults;
 using MediatR;
-using OpcUa.Applications.Errors;
+using OpcUa.Domain.Errors;
 
 namespace OpcUa.Client.Applications.Client.Nodes.Queries.GetValue;
 

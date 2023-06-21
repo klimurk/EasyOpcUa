@@ -1,7 +1,8 @@
 ﻿using FluentResults;
 using MediatR;
 using Opc.Ua;
-using OpcUa.Applications.Errors;
+using OpcUa.Domain.Errors;
+using OpcUa.Domain.Errors;
 
 namespace OpcUa.Client.Applications.Client.Servers.Queries.GetList;
 
@@ -12,7 +13,7 @@ public class GetServerListQueryHandler : IRequestHandler<GetServerListQuery, Res
         DiscoveryClient client = DiscoveryClient.Create(request.Uri);
         try
         {
-            ApplicationDescriptionCollection servers = client.FindServers(null);
+            ApplicationDescriptionCollection servers = client.FindServers(serverUris:null);
             client.Close();
             client.Dispose();
             return servers;
@@ -21,7 +22,7 @@ public class GetServerListQueryHandler : IRequestHandler<GetServerListQuery, Res
         {
             client.Close();
             client.Dispose();
-            return Result.Fail(new ServersNotFoundedError("All", e));
+            return Result.Fail(new ServerNotFoundedError("All", e));
         }
 
     }

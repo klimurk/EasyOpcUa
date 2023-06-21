@@ -4,6 +4,8 @@ using OpcUa.Client.Applications;
 using System.Reflection;
 using OpcUa.Applications.Common.Mappings;
 using OpcUa.Domain;
+using OpcUa.Persistance.Startup;
+using Microsoft.Extensions.Options;
 
 namespace OpcUa.Web;
 
@@ -18,7 +20,7 @@ public class Startup
         // Application configuration
         //services.ConfigureOptions<AppConfig>();
         services.Configure<AppConfig>(Configuration.GetSection(nameof(AppConfig)));
-
+        services.AddSingleton<IAppConfig>(s => s.GetRequiredService<IOptions<AppConfig>>().Value);
         // Blazor services
         services.AddRazorPages();
         services.AddServerSideBlazor();

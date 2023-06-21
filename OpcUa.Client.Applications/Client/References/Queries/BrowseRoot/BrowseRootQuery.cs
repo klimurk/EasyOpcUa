@@ -1,7 +1,6 @@
 ﻿using FluentResults;
 using MediatR;
 using Opc.Ua;
-using OpcUa.Client.Applications.Queries.Browsings.References;
 using OpcUa.Domain.Contracts.Client;
 using System.Xml.Linq;
 

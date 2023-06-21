@@ -16,7 +16,8 @@
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.4.371.91" />
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.4.371.91" />
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Core" Version="1.4.371.91" />
-    <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="shortid" Version="4.0.0" />
+    <PackageReference Include="System.Reactive" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

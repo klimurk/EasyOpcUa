@@ -1,6 +1,6 @@
 ﻿using OpcUa.Domain;
 using Opc.Ua;
-using OpcUa.Applications.Errors;
+using OpcUa.Domain.Errors;
 using System.Runtime.Serialization;
 
 namespace OpcUa.Client.Applications.Helpers;
@@ -49,7 +49,7 @@ public static class OpcWriterHelper
 					length += 8;
 					break;
 				case BuiltInType.String:
-					length += ((string)node.Value).Length + 4;
+					//length += ((string)node.Value).Length + 4;
 					break;
 				//case BuiltInType.CharArray:
 				//	length += ((char[])node.Value).Length + 4;

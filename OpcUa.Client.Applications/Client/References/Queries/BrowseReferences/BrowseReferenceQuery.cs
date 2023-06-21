@@ -1,7 +1,6 @@
 ﻿using FluentResults;
 using MediatR;
 using Opc.Ua;
-using OpcUa.Client.Applications.Queries.Browsings.Nodes;
 using OpcUa.Domain.Contracts.Client;
 
 namespace OpcUa.Client.Applications.Client.References.Queries.BrowseReferences;

@@ -2,7 +2,7 @@
 using FluentValidation;
 using MediatR;
 using Opc.Ua;
-using OpcUa.Applications.Errors;
+using OpcUa.Domain.Errors;
 using OpcUa.Client.Applications.Client.NodeIds.Queries.GetValueList;
 
 namespace OpcUa.Client.Applications.Client.Nodes.Queries.GetValueList;

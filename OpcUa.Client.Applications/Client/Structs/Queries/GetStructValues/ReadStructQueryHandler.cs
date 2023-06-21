@@ -1,7 +1,7 @@
 ﻿using FluentResults;
 using MediatR;
 using Opc.Ua;
-using OpcUa.Applications.Errors;
+using OpcUa.Domain.Errors;
 using OpcUa.Client.Applications.Helpers;
 using OpcUa.Domain;
 using OpcUa.Domain.Contracts.Client;
@@ -13,7 +13,7 @@ public class ReadStructQueryHandler : IRequestHandler<ReadStructQuery, Result<ob
 {
     public async Task<Result<object>> Handle(ReadStructQuery request, CancellationToken cancellationToken)
     {
-        return Result.Fail(new ServersNotFoundedError("", new Exception()));
+        return Result.Fail(new ServerNotFoundedError("", new Exception()));
         ////Read the struct
         //IList<NodeId> nodeIds = new List<NodeId>() { new(request.nodeId) };
         //List<ServiceResult> serviceResults = new();
