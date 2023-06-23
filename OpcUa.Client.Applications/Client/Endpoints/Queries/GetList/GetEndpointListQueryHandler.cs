@@ -22,7 +22,7 @@ public class GetEndpointListQueryHandler : IRequestHandler<GetEndpointListQuery,
         {
             client.Close();
             client.Dispose();
-            return Result.Fail(new EndpointsNotFoundedError(request.Uri.AbsolutePath, e));
+            return Result.Fail(DomainErrors.Opc.Client.Endpoints.NotFoundError.CausedBy(e));
         }
 
     }

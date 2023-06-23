@@ -12,7 +12,6 @@
 		<Folder Include="Client\NodeIds\Commands\WriteValueList\" />
 		<Folder Include="Client\NodeIds\Commands\WriteValue\" />
 		<Folder Include="Client\Nodes\Commands\WriteValueList\" />
-		<Folder Include="Client\Nodes\Commands\WriteValue\" />
 		<Folder Include="Client\Subscibtions\Commands\UnsubscribeNode\" />
 	</ItemGroup>
 

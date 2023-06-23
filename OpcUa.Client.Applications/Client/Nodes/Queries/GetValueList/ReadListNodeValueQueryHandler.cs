@@ -21,21 +21,12 @@ public class ReadListNodeValueQueryHandler : IRequestHandler<ReadListNodeValueQu
         }
         catch (Exception e)
         {
-            return Result.Fail(new ReadNodeError(request.client, request.nodes.First().NodeId, e));
+            return Result.Fail(DomainErrors.Opc.Client.Reading.ReadNodeError.CausedBy(e));
         }
-        List<ReadNodeResultNotGoodError> errors = serviceResults.Where(svResult => svResult != ServiceResult.Good).Select(s => new ReadNodeResultNotGoodError()).ToList();
+        List<Error> errors = serviceResults.Where(svResult => svResult != ServiceResult.Good).Select(s => DomainErrors.Opc.Client.Reading.NotGoodResultError.WithMetadata(nameof(ServiceResult), s)).ToList();
 
 
         return errors.Count > 0 ? Result.Fail(errors) : Result.Ok(values);
-        //IEnumerable<object> result = values.Select(s => s.Value);
-        // exclude bytes with symbol '-'
-        //// check byte[]
-        //if (result.First() is byte[])
-        //{
-        //	List<byte> byteArr = result.OfType<byte>().ToList();
-        //	byte exclude = 45; // symbol '-'
-        //	if (byteArr.Any()) byteArr.RemoveAll(s => s == exclude);
-        //	result = byteArr.ToArray();
-        //}
+ 
     }
 }

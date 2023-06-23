@@ -27,7 +27,7 @@ public class BrowseRootQueryAsyncHandler : IRequestHandler<BrowseRootQuery, Resu
         }
         catch (Exception e)
         {
-            return Result.Fail(new BrowsingRootOpcServerError(request.Client, e));
+            return Result.Fail(DomainErrors.Opc.Client.Browsing.BrowsingRootError.CausedBy(e));
         }
         var collection = response.Results.Select(s => s.References).First(s => s.Count > 0);
         return Result.Ok(collection);

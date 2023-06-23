@@ -30,7 +30,7 @@ public class BrowseReferenceQueryHandler() : IRequestHandler<BrowseReferenceQuer
         }
         catch (Exception e)
         {
-            return Result.Fail(new BrowseReferenceError(request.Client, request.RefDesc, e));
+            return Result.Fail(DomainErrors.Opc.Client.Browsing.BrowsingReferenceError.CausedBy(e));
         }
         return Result.Ok(referenceDescriptionCollection);
     }

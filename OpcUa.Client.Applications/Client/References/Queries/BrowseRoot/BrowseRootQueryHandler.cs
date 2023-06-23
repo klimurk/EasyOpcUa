@@ -28,7 +28,7 @@ public class BrowseRootQueryHandler : IRequestHandler<BrowseRootQuery, Result<Re
         catch (Exception e)
         {
             // exception
-            return Result.Fail(new BrowsingRootOpcServerError(request.Client, e));
+            return Result.Fail(DomainErrors.Opc.Client.Browsing.BrowsingRootError.CausedBy(e));
         }
         return Result.Ok(referenceDescriptionCollection);
     }

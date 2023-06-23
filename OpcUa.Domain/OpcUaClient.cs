@@ -67,7 +67,7 @@ public class OpcUaClient : IOpcClient
         catch (Exception ex)
         {
             //handle Exception here
-            return Result.Fail(new CreateSessionSubscriptionError(this, ex));
+            return Result.Fail(DomainErrors.Opc.Client.Subscriptions.CreateSubscriptionError.CausedBy(ex));
         }
     }
 
@@ -75,13 +75,15 @@ public class OpcUaClient : IOpcClient
     {
         try
         {
-            //Delete the subscription and all items submitted
             Subscription.Delete(isSilent);
             return Result.Ok();
         }
         catch (Exception e)
         {
-            return Result.Fail(new RemoveSubscriptionError(this, Subscription, e));
+            return Result.Fail(
+                DomainErrors.Opc.Client.Subscriptions.RemoveSubscriptionError
+                .WithMetadata(nameof(Session.ConfiguredEndpoint.EndpointUrl), Session.ConfiguredEndpoint.EndpointUrl)
+                .CausedBy(e));
         }
     }
     #endregion

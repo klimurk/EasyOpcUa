@@ -11,11 +11,11 @@ public class ReadNodeValueQueryHandler : IRequestHandler<ReadNodeValueQuery, Res
         object result;
         try
         {
-            result = request.client.Session.ReadValue(request.nodes.NodeId, request.ExpectedType);
+            result = request.client.Session.ReadValue(request.nodes.NodeId, request.ExpectedType ?? typeof(object));
         }
         catch (Exception e)
         {
-            return Result.Fail(new ReadNodeError(request.client, request.nodes.NodeId, e));
+            return Result.Fail(DomainErrors.Opc.Client.Reading.ReadNodeError.CausedBy(e));
         }
         return result;
     }

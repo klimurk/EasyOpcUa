@@ -6,11 +6,11 @@ using OpcUa.Persistance.Startup;
 using OpcUa.Client.Applications.Client.Servers.Queries.GetList;
 using OpcUa.Client.Applications.Client.Endpoints.Queries.GetList;
 using OpcUa.Client.Applications.Client.Connections.Commands.Connect;
-using Microsoft.Extensions.Options;
-using OpcUa.Client.Applications.Client.Nodes.Queries.GetNode;
 using OpcUa.Domain;
-using OpcUa.Client.Applications.Client.Subscriptions.Commands.SubscribeNode;
-using System.Linq;
+using OpcUa.Client.Applications.Client.Subscibtions.Commands.SubscribeNodeList;
+using OpcUa.Client.Applications.Client.Nodes.Queries.GetValue;
+using OpcUa.Client.Applications.Client.Nodes.Queries.GetNodeList;
+using OpcUa.Client.Applications.Client.Nodes.Commands.WriteNodeValue;
 
 namespace OpcUa.Persistance;
 
@@ -47,16 +47,14 @@ public class OpcControllerService
         _Client.Name = opcInit.Name;
         _Client.CreateSubscription(10);
         var nodesResult = await mediator.Send(new GetNodeListQuery(_Client, opcInit.Signals.Select(s => s.Address)));
-        var nodes = nodesResult.Value.Select(s => new OpcNode(s, opcInit.Signals.First(v => v.Address == s.NodeId.ToString()).Name));
+        IEnumerable<OpcNode> nodes = nodesResult.Value.Select(s => new OpcNode(s, opcInit.Signals.First(v => v.Address == s.NodeId.ToString()).Name));
         await mediator.Send(new SubscribeNodeListCommand(_Client, nodes, MonitoringMode.Reporting, 1));
 
-        //foreach (OpcSignalInit nodeInit in opcInit.Signals)
-        //{
-        //    Result<Node> nodeResult = await mediator.Send(new GetNodeQuery(_Client, nodeInit.Address));
-        //    Node node = nodeResult.Value;
-        //    OpcNode myNode = new(node, nodeInit.Name);
+        var writeResult = await mediator.Send(new WriteNodeValueCommand(_Client, nodes.First().Node, 2));
 
-        //}
+        var result = await mediator.Send(new ReadNodeValueQuery(_Client, nodes.First().Node));
+
+
         _AutoResetEvent.Set();
     }
 

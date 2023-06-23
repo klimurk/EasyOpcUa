@@ -13,7 +13,7 @@ public class ReadStructQueryHandler : IRequestHandler<ReadStructQuery, Result<ob
 {
     public async Task<Result<object>> Handle(ReadStructQuery request, CancellationToken cancellationToken)
     {
-        return Result.Fail(new ServerNotFoundedError("", new Exception()));
+        return Result.Fail(new Error("not implemented"));
         ////Read the struct
         //IList<NodeId> nodeIds = new List<NodeId>() { new(request.nodeId) };
         //List<ServiceResult> serviceResults = new();

@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using FluentValidation;
 using MediatR;
+using OpcUa.Domain.Errors;
 
 namespace OpcUa.Applications.Common.Behaviors;
 
@@ -18,22 +19,27 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
         if (validationResult.IsFailed)
         {
             var result = new TResponse();
-
-            foreach (var reason in validationResult.Reasons)
-                result.Reasons.Add(reason);
+            result.Reasons.AddRange(validationResult.Reasons);
 
             return result;
         }
         return await next();
+
     }
 
     private Task<Result> ValidateAsync(TRequest request)
     {
         var context = new ValidationContext<TRequest>(request);
-        var failers = _validators.Select(v => v.Validate(context)).SelectMany(r => r.Errors).Where(fail => fail is not null).ToList();
+        var fails = _validators
+            .Select(v => v.Validate(context))
+            .SelectMany(r => r.Errors)
+            .Where(fail => fail is not null)
+            .ToDictionary(s => s.PropertyName,
+                s => s.AttemptedValue,
+                StringComparer.OrdinalIgnoreCase);
 
-        return failers.Count != 0 ?
-            Task.FromResult(Result.Fail("Validation failed")) :
+        return fails.Count != 0 ?
+            Task.FromResult(Result.Fail(DomainErrors.Validation.ValidationFailedError.WithMetadata(fails))) :
             Task.FromResult(Result.Ok());
     }
 }

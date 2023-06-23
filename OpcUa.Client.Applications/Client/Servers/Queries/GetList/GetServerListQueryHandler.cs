@@ -22,7 +22,7 @@ public class GetServerListQueryHandler : IRequestHandler<GetServerListQuery, Res
         {
             client.Close();
             client.Dispose();
-            return Result.Fail(new ServerNotFoundedError("All", e));
+            return Result.Fail(DomainErrors.Opc.Client.Server.NotFoundError.CausedBy(e));
         }
 
     }

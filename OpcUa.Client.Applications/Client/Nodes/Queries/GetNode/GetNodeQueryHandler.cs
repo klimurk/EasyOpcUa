@@ -15,30 +15,12 @@ public class GetNodeQueryHandler : IRequestHandler<GetNodeQuery, Result<Node>>
         string idString = request.NodeId.Trim();
         try
         {
-            Node result= request.Client.Session.ReadNode(new NodeId(idString));
+            Node result = request.Client.Session.ReadNode(new NodeId(idString));
             return result;
         }
         catch (Exception e)
         {
-            return Result.Fail(new ReadNodeError(request.Client, request.NodeId, e));
-        }
-    }
-}
-public class GetNodeListQueryHandler : IRequestHandler<GetNodeListQuery, Result<IList<Node>>>
-{
-    public async Task<Result<IList<Node>>> Handle(GetNodeListQuery request, CancellationToken cancellationToken)
-    {
-        IList<NodeId> nodeIds = request.NodeId.Select(s => new NodeId(s.Trim())).ToList();
-        try
-        {
-            request.Client.Session.ReadNodes(nodeIds, out IList<Node> result, out IList<ServiceResult> serviceResult);
-            var errors = serviceResult.Where(s => s.StatusCode != StatusCodes.Good).Select(s => new ReadNodeError(request.Client, s.AdditionalInfo));
-            if(errors.Any())  return Result.Fail(errors); 
-            return Result.Ok(result);
-        }
-        catch (Exception e)
-        {
-            return Result.Fail(new ReadNodeError(request.Client, request.NodeId.First(), e));
+            return Result.Fail(DomainErrors.Opc.Client.Reading.ReadNodeError.CausedBy(e));
         }
     }
 }

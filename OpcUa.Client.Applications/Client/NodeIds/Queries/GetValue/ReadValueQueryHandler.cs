@@ -16,7 +16,7 @@ public class ReadValueQueryHandler : IRequestHandler<ReadValueQuery, Result<obje
         }
         catch (Exception e)
         {
-            return Result.Fail(new ReadNodeError(request.client, request.nodeId, e));
+            return Result.Fail(DomainErrors.Opc.Client.Reading.ReadNodeError.CausedBy(e));
         }
         return result;
     }

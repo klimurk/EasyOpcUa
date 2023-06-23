@@ -22,4 +22,5 @@ public enum ErrorCodes
     RemoveSubscriptionErrorCode,
     SubscriptionExist,
     SubscribeError,
+    ValidationErrorCode,
 }

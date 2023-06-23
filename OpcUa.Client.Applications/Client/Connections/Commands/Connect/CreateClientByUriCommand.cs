@@ -23,7 +23,7 @@ public class CreateClientByUriCommandHandler : IRequestHandler<CreateClientByUri
 {
     public async Task<Result<IOpcClient>> Handle(CreateClientByUriCommand request, CancellationToken cancellationToken)
     {
-        var applicationConfig = request.clientAppConfig is null ? 
+        var applicationConfig = request.clientAppConfig is null ?
             await new ApplicationConfigurationFactory().CreateAsync() :
             request.clientAppConfig;
 
@@ -34,7 +34,7 @@ public class CreateClientByUriCommandHandler : IRequestHandler<CreateClientByUri
         }
         catch (Exception e)
         {
-            return Result.Fail(new ClientCertificateValidationError(applicationConfig, e));
+            return Result.Fail(DomainErrors.Opc.Client.Certificates.ValidationError.WithMetadata(nameof(applicationConfig), applicationConfig).CausedBy(e));
         }
 
         //Create EndPoint configuration
@@ -56,7 +56,7 @@ public class CreateClientByUriCommandHandler : IRequestHandler<CreateClientByUri
         }
         catch (Exception e)
         {
-            return Result.Fail(new ServerConnectionError(request.EndpointDescription, request.UserIdentity, request.clientAppConfig, e));
+            return Result.Fail(DomainErrors.Opc.Client.Server.NotFoundError.CausedBy(e));
         }
         return new OpcUaClient(applicationConfig, session);
     }
